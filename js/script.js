@@ -16,7 +16,7 @@ angular.module('ISPO', [])
         this.getData = function (){ // Initial server call collecting projects.
 
             return $http({
-                maethod: 'GET',
+                method: 'GET',
                 url: "request.php" //Calling local PHP script
             })
                 .success(function(data){
