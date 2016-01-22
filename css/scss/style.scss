@@ -1,0 +1,83 @@
+@mixin width_height($width, $height){
+  width: $width;
+  height: $height;
+}
+
+.wraper{
+  @include width_height(300px, 250px);
+  margin: 0 auto;
+}
+.bgrnd{
+
+  @include width_height(100%, 100%);
+
+  position: relative;
+  background-size: cover;
+
+  opacity:0;
+  -webkit-animation:fadeIn ease-in 1;
+  -moz-animation:fadeIn ease-in 1;
+  animation:fadeIn ease-in 1;
+
+  -webkit-animation-fill-mode:forwards;
+  -moz-animation-fill-mode:forwards;
+  animation-fill-mode:forwards;
+
+  -webkit-animation-duration:1.5s;
+  -moz-animation-duration:1.5s;
+  animation-duration:1.5s;
+
+  .opacity{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.3);
+
+    .title-holder {
+      text-align: center;
+
+      .title {
+        color: black;
+        display: inline-block;
+      }
+    }
+
+    .description{
+      text-align: center;
+      display: none;
+      height: 50%;
+      overflow-y: auto;
+      background-color: rgba(255,255,255,0.6);
+    }
+
+    .bottom{
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+
+      .half{
+        width: 50%;
+        float: left;
+      }
+    }
+  }
+}
+.time{
+  float: right;
+  margin: 0 7px 7px 0;
+}
+.link{
+  margin-left: 7px;
+  text-decoration: none;
+  color: blue;
+}
+
+.wraper:hover{
+  background-color: rgba(255,255,255,0.5);
+  .description{
+    display: block;
+  }
+}
+
+@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
