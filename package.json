@@ -1,0 +1,11 @@
+{
+  "name": "ispo",
+  "version": "1.0.0",
+  "description": "Testing project for innosabi.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vjeko Babic",
+  "license": "ISC"
+}
