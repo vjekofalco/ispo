@@ -1,5 +1,4 @@
 angular.module('ISPO', [])
-
     .config(function($httpProvider) {
         $httpProvider.interceptors.push(function(){
 
@@ -11,7 +10,7 @@ angular.module('ISPO', [])
             }
         })
     })
-    .service('myService', function ($http){
+    .service('getProjects', function ($http){
 
         this.getData = function (){ // Initial server call collecting projects.
 
@@ -24,7 +23,7 @@ angular.module('ISPO', [])
                 });
         }
     })
-    .controller('myControler', ['$interval', '$scope', 'myService', function ($interval, $scope, myService) {
+    .controller('projectsSliderCtrl', ['$interval', '$scope', 'getProjects', function ($interval, $scope, getProjects) {
 
         var projectIndex = 0; // Index of current slideing element. Initalizing to 0 sou first image deisplays first
 
@@ -34,45 +33,63 @@ angular.module('ISPO', [])
                 link: "https://innosabi.com/",
                 img: "img/1.jpeg",
                 description: "Sed ut perspiciatis unde omnis iste natus error sit voluptate. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit.Aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.",
-                endDate: counter("2016-01-30 23:00:00"),
+                endDate: "2016-01-30 23:00:00",
+                timeLeft: '',
             },
             1 : {
                 name : "Project Testing",
                 link: "https://innosabi.com/",
                 img: "img/2.jpeg",
                 description: "Sed ut perspiciatis unde omnis iste natus error sit voluptate. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit.Aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.",
-                endDate: counter("2016-01-28 10:00:00"),
+                endDate: "2016-01-28 10:00:00",
+                timeLeft: '',
             },
             2 : {
                 name : "Testing Project",
                 link: "https://innosabi.com/",
                 img: "img/3.jpeg",
                 description: "Sed ut perspiciatis unde omnis iste natus error sit voluptate. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit.Aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.",
-                endDate: counter("2016-01-31 22:00:00"),
+                endDate: "2016-01-31 22:00:00",
+                timeLeft: '',
             },
             3 : {
                 name : "Project Testing",
                 link: "https://innosabi.com/",
                 img: "img/4.jpeg",
                 description: "Sed ut perspiciatis unde omnis iste natus error sit voluptate. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit.Aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.",
-                endDate: counter("2016-01-28 23:00:00"),
+                endDate: "2016-01-28 23:00:00",
+                timeLeft: '',
             }
         }
 
-        myService.getData() // Calling the service
-            .success(function(data){
-                //$scope.projects = data.projects; //This would be like if we are pooling everything from API
-                console.log(data.projects); //Just to visualize
-                var apiProject = { //Adding Project from API to static object
-                    name : data.projects[0].name,
-                    link: data.projects[0].link,
-                    img: data.projects[0].images.projectImage.link.href,
-                    description: data.projects[0].description,
-                    endDate: counter(data.projects[0].phases[0].step[131].endDate.date)
-                }
-                $scope.projects[Object.keys($scope.projects).length]=apiProject;
-            })
+        $scope.loadProjects = function() {
+            getProjects.getData() // Calling the service
+                .success(function (data) {
+                    //$scope.projects = data.projects; //This would be like if we are pooling everything from API
+                    console.log(data.projects); //Just to visualize
+                    angular.forEach(data.projects, function (value, key) {
+                        var phase = Object.keys(data.projects[key].phases)[0];
+                        var steps = Object.keys(data.projects[key].phases[phase].step)[0];
+                        var apiProject = { //Adding Project from API to static object
+                            name: data.projects[key].name,
+                            link: data.projects[key].link,
+                            img: data.projects[key].images.projectImage.link.href,
+                            description: data.projects[key].description,
+                            endDate: data.projects[key].phases[phase].step[steps].endDate.date,
+                            timeLeft: '',
+                        }
+                        $scope.projects[Object.keys($scope.projects).length] = apiProject;
+                    })
+                })
+        }
+        $scope.loadProjects();
 
+        $scope.refreshProjects = function(){ // Setting up interval function to check for a new projects every 5 minutes
+            $interval(function(){
+                $scope.loadProjects();
+            }, 50000);
+        }
+        $scope.refreshProjects();
 
         $scope.isCurrentSlideIndex = function(index){ // Checking if which image needs to be displayed
             if (projectIndex == index) {
@@ -92,41 +109,55 @@ angular.module('ISPO', [])
         }
 
         $scope.startSliding = function(){
-            $interval(function(){ // Every 4.5 secconds we are changing the project.
+            slide =  $interval(function(){ // Every 4.5 secconds we are changing the project.
                 changeProject();
             }, 5000);
         }
+        $scope.startSliding();// Starting slider
 
-        $scope.startSliding();//Starting slider
-
-        function counter(date) { // Calculating how much time we have left till start
-            var end = new Date(date);
-
-            //Initializing time Variables sou we can calculate with each of them
-            var sec = 1000;
-            var min = sec * 60;
-            var h = min * 60;
-            var d = h * 24;
-            var timer;
-
-            var now = new Date();
-            var distance = end - now; // Calculating the diference
-            if (distance < 0) {
-
-                clearInterval(timer);
-                document.getElementById('countdown').innerHTML = 'EXPIRED!';
-
-                return;
-            }
-
-            // Converting difference to readable date format
-            var days = Math.floor(distance / d);
-            var hours = Math.floor((distance % d) / h);
-            var minutes = Math.floor((distance % h) / min);
-            var seconds = Math.floor((distance % min) / sec);
-
-            return days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+        $scope.stopSlide = function(){ // Stopping slider on Hover
+            $interval.cancel(slide);
         }
 
+        $scope.count = function () { // Calculating how much time we have left till start
+            $interval(function () {
+                angular.forEach($scope.projects, function(value, key) {
+                    var end = new Date($scope.projects[key].endDate);
+
+                    //Initializing time Variables sou we can calculate with each of them
+                    var sec = 1000;
+                    var min = sec * 60;
+                    var h = min * 60;
+                    var d = h * 24;
+
+                    var now = new Date();
+                    var distance = end - now; // Calculating the diference
+
+                    if (distance < 0) {
+                        $scope.projects[key].timeLeft = 'EXPIRED';
+                    }
+
+                    // Converting difference to readable date format
+                    var days = Math.floor(distance / d);
+                    var hours = Math.floor((distance % d) / h);
+                    var minutes = Math.floor((distance % h) / min);
+                    var seconds = Math.floor((distance % min) / sec);
+
+                    $scope.projects[key].timeLeft = days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+                })
+            }, 1000)
+        }
+        $scope.count(); // Starting counter
 
     }])
+    .filter('htmlToText', function(){ // Filter is stripping the HTML tags from text
+        return function(html){
+            var text =  html ? String(html).replace(/<[^>]+>/gm, '') : ''; // Deleting HTML tags
+            if(text.length > 200){ // Checking if text is too long
+                text = text.substring(0,200);
+                text = text + " ...";
+            }
+            return text; // Returning result
+        }
+    })
+

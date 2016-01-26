@@ -7,23 +7,23 @@
     <script type="text/javascript" src="node_modules/angular/angular.min.js"></script>
 </head>
 
-<body ng-app="ISPO" ng-controller="myControler">
+<body ng-app="ISPO" ng-controller="projectsSliderCtrl">
 
-    <div class="wraper" >
-        <div class="bgrnd" ng-repeat="project in projects" ng-style="{'background-image':'url({{project.img}})'}" ng-if="isCurrentSlideIndex($index)">
+    <div class="wraper">
+        <div class="bgrnd" ng-repeat="project in projects" ng-style="{'background-image':'url({{project.img}})'}" ng-if="isCurrentSlideIndex($index)" ng-mouseover="stopSlide()" ng-mouseleave="startSliding()">
             <div class="opacity">
                 <div class="title-holder">
                     <h3 class="title"> {{project.name}} </h3>
                 </div>
                 <div class="description">
-                    <p>{{project.description}}</p>
+                    <p>{{project.description | htmlToText}}</p>
                 </div>
                 <div class="bottom">
                     <div class="half">
                         <a href="{{project.link}}" class="link">Apply now</a>
                     </div>
                     <div class="half">
-                        <p class="time">{{project.endDate}}</p>
+                        <p class="time">{{project.timeLeft}}</p>
                     </div>
                 </div>
             </div>
