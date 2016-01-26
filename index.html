@@ -11,9 +11,11 @@
 
     <div class="wraper">
         <div class="bgrnd" ng-repeat="project in projects" ng-style="{'background-image':'url({{project.img}})'}" ng-if="isCurrentSlideIndex($index)" ng-mouseover="stopSlide()" ng-mouseleave="startSliding()">
+            <div class="left" ng-click="prevSlide()"></div>
+            <div class="right" ng-click="changeProject()"></div>
             <div class="opacity">
                 <div class="title-holder">
-                    <h3 class="title"> {{project.name}} </h3>
+                    <h3 class="title">{{project.name}}</h3>
                 </div>
                 <div class="description">
                     <p>{{project.description | htmlToText}}</p>

@@ -76,6 +76,17 @@
     display: block;
   }
 }
+.left{
+  width: 50%;
+  height: 100%;
+  position: absolute;
+}
+.right{
+  width: 50%;
+  height: 100%;
+  position: absolute;
+  right: 0;
+}
 @-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 @-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }

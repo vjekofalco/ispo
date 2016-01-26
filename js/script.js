@@ -97,7 +97,8 @@ angular.module('ISPO', [])
             }
         }
 
-        function changeProject(){ // Changing project to display
+        // This function also is in use to manually slide project forward
+        $scope.changeProject = function(){ // Changing project to display
             if(Object.keys($scope.projects).length > 0) { // If we have yust one project then we don't need to apply slide effect
                 if (projectIndex < Object.keys($scope.projects).length - 1) { // Checking if we have reach last project
                     projectIndex = projectIndex + 1;
@@ -110,13 +111,24 @@ angular.module('ISPO', [])
 
         $scope.startSliding = function(){
             slide =  $interval(function(){ // Every 4.5 secconds we are changing the project.
-                changeProject();
+                $scope.changeProject();
             }, 5000);
         }
         $scope.startSliding();// Starting slider
 
         $scope.stopSlide = function(){ // Stopping slider on Hover
             $interval.cancel(slide);
+        }
+
+        $scope.prevSlide = function(){
+            if(Object.keys($scope.projects).length > 0) { // If We have more than one project we can do the slide
+                if (projectIndex > 0) { // Checking if we have reach the first project
+                    projectIndex = projectIndex - 1;
+                }
+                else { // If we are on the first project then go to last
+                    projectIndex = Object.keys($scope.projects).length - 1;
+                }
+            }
         }
 
         $scope.count = function () { // Calculating how much time we have left till start
